@@ -1,10 +1,10 @@
 const mysql = require('mysql2')
 
 const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  database: 'transaction',
-  port: 8000,
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  database: process.env.DB_DATABASES || 'transaction',
+  port: process.env.DB_PORT || 8000,
 })
 
 db.connect((err) => {

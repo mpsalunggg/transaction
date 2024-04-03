@@ -1,4 +1,5 @@
 const express = require('express')
+require('dotenv').config()
 const db = require('./configs/db')
 const app = express()
 const port = 3030
