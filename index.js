@@ -4,11 +4,12 @@ const db = require('./configs/db')
 const app = express()
 const port = process.env.SERVER_PORT || 3030
 
+app.use(express.json())
+
 app.get('/', (_, res) => {
   db.query('SELECT * FROM user', function (err, results) {
-    console.log(results)
+    res.json({ code: 'Response Success', results })
   })
-  res.json({ code: 'Response Success' })
 })
 
 app.listen(port, () => {
