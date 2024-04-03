@@ -8,7 +8,7 @@ app.use(express.json())
 
 app.get('/api', (_, res) => {
   db.query('SELECT * FROM user', function (err, results) {
-    res.json({ code: 'Response Success', results })
+    res.json({ code: 'Response Success', data: results })
   })
 })
 
