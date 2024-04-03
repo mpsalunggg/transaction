@@ -6,7 +6,7 @@ const port = process.env.SERVER_PORT || 3030
 
 app.use(express.json())
 
-app.get('/', (_, res) => {
+app.get('/api', (_, res) => {
   db.query('SELECT * FROM user', function (err, results) {
     res.json({ code: 'Response Success', results })
   })
