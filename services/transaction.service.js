@@ -1,8 +1,6 @@
 const userRepository = require('../repositories/user.repository')
 const transactionRepository = require('../repositories/transaction.repository')
 
-const utils = require('../utils/format.util')
-
 const getBalanceService = (id, response) => {
   userRepository.getUserById(id, (err, existingUser) => {
     if (err) {
@@ -69,4 +67,63 @@ const postTopupService = (id, { top_up_amount, description }, response) => {
   })
 }
 
-module.exports = { getBalanceService, postTopupService }
+const postTransactionService = (id, { code_service }, response) => {
+  userRepository.getUserById(id, (err, existingUser) => {
+    if (err) {
+      response(400, err, null)
+      return
+    }
+
+    const BALANCE = existingUser.balance
+
+    transactionRepository.getServiceByCode(code_service, (err, data) => {
+      if (err) {
+        response(400, err, null)
+        return
+      }
+
+      if (!data) {
+        response(400, 'Service ataus Layanan tidak ditemukan', null)
+        return
+      }
+
+      if (BALANCE < data.service_tarif) {
+        response(400, 'Balance tidak mencukupi', null)
+        return
+      }
+
+      const NEW_BALANCE = BALANCE - data.service_tarif
+
+      transactionRepository.updateBalance(id, NEW_BALANCE, (err, result) => {
+        if (err) {
+          response(400, err, null)
+          return
+        }
+
+        console.log('tesssssss', data)
+        const INVOICE_NUMBER = 'INV-' + Math.floor(Math.random(100) * 100000)
+        transactionRepository.createTransaction(
+          id,
+          {
+            invoice_number: INVOICE_NUMBER,
+            id_service: data.id_service,
+            service_code: code_service,
+            transaction_type: 'PAYMENT',
+            description: data.service_name,
+            total_amount: data.service_tarif,
+            created_on: new Date().toISOString().slice(0, 19).replace('T', ' '),
+          },
+          (err, result) => {
+            if (err) {
+              response(400, err, null)
+              return
+            }
+            response(200, 'Suksessss', result)
+          }
+        )
+      })
+    })
+  })
+}
+
+module.exports = { getBalanceService, postTopupService, postTransactionService }

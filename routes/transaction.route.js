@@ -6,5 +6,6 @@ const transactionController = require('../controllers/transaction.controller')
 
 router.get('/balance', authenticateToken, transactionController.getBalance)
 router.post('/topup', authenticateToken, transactionController.postTopup)
+router.post('/transaction', authenticateToken, transactionController.postTransaction)
 
 module.exports = router

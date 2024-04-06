@@ -18,4 +18,15 @@ const postTopup = (req, res) => {
   )
 }
 
-module.exports = { getBalance, postTopup }
+const postTransaction = (req, res) => {
+  const token = req.jwt
+  transactionService.postTransactionService(
+    token.id,
+    req.body,
+    (code, message, data) => {
+      res.status(code).json({ status: code, message: message, data: data })
+    }
+  )
+}
+
+module.exports = { getBalance, postTopup, postTransaction }
