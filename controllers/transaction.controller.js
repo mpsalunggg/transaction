@@ -29,4 +29,15 @@ const postTransaction = (req, res) => {
   )
 }
 
-module.exports = { getBalance, postTopup, postTransaction }
+const getHistory = (req, res) => {
+  const token = req.jwt
+  transactionService.getHistoryService(
+    token.id,
+    req.query,
+    (code, message, data) => {
+      res.status(code).json({ status: code, message: message, data: data })
+    }
+  )
+}
+
+module.exports = { getBalance, postTopup, postTransaction, getHistory }

@@ -126,4 +126,50 @@ const postTransactionService = (id, { code_service }, response) => {
   })
 }
 
-module.exports = { getBalanceService, postTopupService, postTransactionService }
+const getHistoryService = (id, { offset, limit }, response) => {
+  console.log(limit, offset)
+  transactionRepository.getServiceByIdUser(id, (err, result) => {
+    if (err) {
+      response(400, err, null)
+      return
+    }
+
+    const newData = result.map(
+      ({
+        invoice_number,
+        transaction_type,
+        description,
+        total_amount,
+        created_on,
+      }) => ({
+        invoice_number,
+        transaction_type,
+        description,
+        total_amount,
+        created_on,
+      })
+    )
+
+    if (offset === undefined || limit === undefined) {
+      response(200, 'Get history berhasil', {
+        offset,
+        limit,
+        records: newData,
+      })
+      return
+    }
+
+    response(200, 'Get history berhasil', {
+      offset,
+      limit,
+      records: newData.slice(offset, offset + limit),
+    })
+  })
+}
+
+module.exports = {
+  getBalanceService,
+  postTopupService,
+  postTransactionService,
+  getHistoryService,
+}

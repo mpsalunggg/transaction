@@ -58,4 +58,24 @@ const getServiceByCode = (code_service, response) => {
   )
 }
 
-module.exports = { updateBalance, createTransaction, getServiceByCode }
+const getServiceByIdUser = (id_user, response) => {
+  db.query(
+    'SELECT * FROM transaction WHERE id_user = ?',
+    [id_user],
+    (err, results) => {
+      if (err) {
+        response(err.sqlMessage, null)
+        return
+      }
+
+      response(null, results)
+    }
+  )
+}
+
+module.exports = {
+  updateBalance,
+  createTransaction,
+  getServiceByCode,
+  getServiceByIdUser,
+}
