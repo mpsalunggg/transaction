@@ -127,14 +127,13 @@ const postTransactionService = (id, { code_service }, response) => {
 }
 
 const getHistoryService = (id, { offset, limit }, response) => {
-  console.log(limit, offset)
   transactionRepository.getServiceByIdUser(id, (err, result) => {
     if (err) {
       response(400, err, null)
       return
     }
 
-    const newData = result.map(
+    const newData = result?.map(
       ({
         invoice_number,
         transaction_type,
@@ -162,7 +161,7 @@ const getHistoryService = (id, { offset, limit }, response) => {
     response(200, 'Get history berhasil', {
       offset,
       limit,
-      records: newData.slice(offset, offset + limit),
+      records: newData.slice(Number(offset), Number(offset) + Number(limit)),
     })
   })
 }
